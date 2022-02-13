@@ -1,78 +1,87 @@
 package calculator
 
 import (
-	"errors"
 	"fmt"
 	"strconv"
 	"strings"
 )
 
-const arithmetics = "/*-+"
+const arithmeticOperatorsByPriority = "/*-+"
 
-type arithmeticOperation = func(op1, op2 int64) (int64, error)
+type calculatedFunction = func(op1, op2 int64) (int64, error)
 
-var arithmeticOperations = map[rune]arithmeticOperation{
-	'/': func(op1, op2 int64) (res int64, err error) {
+type arithmeticOperation struct {
+	sign     rune
+	function calculatedFunction
+}
+
+// арифметические операции в порядке приоритета выполнения
+var arithmeticOperations = [...]arithmeticOperation{
+	{'/', func(op1, op2 int64) (res int64, err error) {
 		if op2 == 0 {
-			err = errors.New("деление на ноль")
+			err = &DivisionByZeroError{op1, op2}
 		} else {
 			res = op1 / op2
 		}
 		return
-	},
-	'*': func(op1, op2 int64) (res int64, err error) {
+	}},
+	{'*', func(op1, op2 int64) (res int64, err error) {
 		res = op1 * op2
 		return
-	},
-	'-': func(op1, op2 int64) (res int64, err error) {
+	}},
+	{'-', func(op1, op2 int64) (res int64, err error) {
 		res = op1 - op2
 		return
-	},
-	'+': func(op1, op2 int64) (res int64, err error) {
+	}},
+	{'+', func(op1, op2 int64) (res int64, err error) {
 		res = op1 + op2
 		return
-	},
+	}},
 }
 
-func handleExpressionError(expression string, e error) error {
-	return fmt.Errorf("выражение '%v' некорректно:\n%v\n", expression, e)
+func CalculateExpression(expression string) (result string, err error) {
+
+	defer func() {
+		if err != nil {
+			err = &InvalidExpressionError{expression, err}
+			return
+		}
+	}()
+
+	operators, strOperands := splitToOperandsAndOperators(expression)
+
+	if l1, l2 := len(strOperands), len(operators); l1 != l2+1 {
+		err = &WrongNumberOfOperatorsAndOperands{l1, l1}
+		return
+	}
+
+	operands, err := getInt64Operands(strOperands)
+	if err != nil {
+		return
+	}
+
+	expressionResult, err := getExpressionResult(operators, operands)
+	if err != nil {
+		return
+	}
+
+	operators = append(operators, '=')
+	strOperands = append(strOperands, strconv.FormatInt(expressionResult, 10))
+
+	result = concatExpressionWithWhitespaces(strOperands, operators)
+
+	return
 }
 
-func Calculate(expression string) (result string, err error) {
-
-	var operations []rune
-
+func splitToOperandsAndOperators(expression string) (operators []rune, operands []string) {
 	splitFunc := func(c rune) bool {
-		if strings.ContainsRune(arithmetics, c) {
-			operations = append(operations, c)
+		if strings.ContainsRune(arithmeticOperatorsByPriority, c) {
+			operators = append(operators, c)
 			return true
 		}
 		return false
 	}
-	stringOperands := strings.FieldsFunc(expression, splitFunc)
-
-	if len(stringOperands) != len(operations)+1 {
-		err = handleExpressionError(expression, errors.New("количество операнд должно быть на один больше количества операторов"))
-		return
-	}
-
-	operands, err := getInt64Operands(stringOperands)
-	if err != nil {
-		err = handleExpressionError(expression, err)
-		return
-	}
-
-	expressionResult, err := calculateResult(operations[:], operands)
-	if err != nil {
-		err = handleExpressionError(expression, err)
-		return
-	}
-
-	operations = append(operations, '=')
-
-	stringOperands = append(stringOperands, strconv.FormatInt(expressionResult, 10))
-
-	result = concatExpressionWithWhitespaces(stringOperands, operations)
+	operands = strings.FieldsFunc(expression, splitFunc)
 
 	return
 }
@@ -82,58 +91,27 @@ func getInt64Operands(stringOperands []string) (operands []int64, err error) {
 	operands = make([]int64, len(stringOperands))
 
 	for i, elem := range stringOperands {
-		number, e := strconv.ParseInt(elem, 10, 64)
-		if e != nil {
-			err = fmt.Errorf("ошибка при попытке конвертировать строку '%v' в число: %v", elem, e)
+		if number, e := strconv.ParseInt(elem, 10, 64); e != nil {
+			err = &ConversionToIntegerError{elem}
 			return
+		} else {
+			operands[i] = number
 		}
-		operands[i] = number
 	}
 
 	return
 }
 
-func concatExpressionWithWhitespaces(stringOperands []string, operations []rune) string {
+func getExpressionResult(operatorsOrigin []rune, operandsOrigin []int64) (result int64, err error) {
 
-	sb := strings.Builder{}
-
-	sb.Grow(len(stringOperands))
-
-	sb.WriteString(stringOperands[0])
-
-	for i, operation := range operations {
-		sb.WriteString(fmt.Sprintf(" %v %v", string(operation), stringOperands[i+1]))
-	}
-
-	return sb.String()
-}
-
-func calculateResult(operationsOrigin []rune, operandsOrigin []int64) (result int64, err error) {
-
-	operations := make([]rune, len(operationsOrigin))
+	operators := make([]rune, len(operatorsOrigin))
 	operands := make([]int64, len(operandsOrigin))
 	copy(operands, operandsOrigin)
-	copy(operations, operationsOrigin)
+	copy(operators, operatorsOrigin)
 
-	for _, sign := range arithmetics {
-		for i := 0; i < len(operations); {
-			operation := operations[i]
-			if operation == sign {
-				op1 := operands[i]
-				op2 := operands[i+1]
-				r, e := arithmeticOperations[operation](op1, op2)
-
-				if e != nil {
-					err = fmt.Errorf("ошибка при подсчете значения выражения (%v %v %v): %v", op1, string(operation), op2, e)
-					return
-				}
-
-				operands[i] = r
-				operands = removeInt64(operands, i+1)
-				operations = removeRunes(operations, i)
-			} else {
-				i++
-			}
+	for _, operation := range arithmeticOperations {
+		if err = calculateOperations(operation, &operators, &operands); err != nil {
+			return
 		}
 	}
 
@@ -142,10 +120,49 @@ func calculateResult(operationsOrigin []rune, operandsOrigin []int64) (result in
 	return
 }
 
-func removeInt64(slice []int64, s int) []int64 {
-	return append(slice[:s], slice[s+1:]...)
+// Функция последоватльено подсчитывает все операции со знаком равным operation.sign
+// Удаляет из operators все знаки, равные operation.sign
+// Удаляет из operands каждые два операнда, учавствующие в operation,
+//		и добавляет на место первого операнда результат вычисления operation.function
+func calculateOperations(operation arithmeticOperation, operators *[]rune, operands *[]int64) (err error) {
+
+	var operationResult int64
+
+	for pos := 0; pos < len(*operators); pos++ {
+		if (*operators)[pos] == operation.sign {
+			operationResult, err = operation.function((*operands)[pos], (*operands)[pos+1])
+
+			if err != nil {
+				return
+			}
+
+			(*operands)[pos] = operationResult
+			removeOperandAt(operands, pos+1)
+			removeOperatorAt(operators, pos)
+			pos--
+		}
+	}
+
+	return
 }
 
-func removeRunes(slice []rune, s int) []rune {
-	return append(slice[:s], slice[s+1:]...)
+func removeOperandAt(slice *[]int64, s int) {
+	*slice = append((*slice)[:s], (*slice)[s+1:]...)
+}
+
+func removeOperatorAt(slice *[]rune, s int) {
+	*slice = append((*slice)[:s], (*slice)[s+1:]...)
+}
+
+func concatExpressionWithWhitespaces(operands []string, operators []rune) string {
+
+	sb := strings.Builder{}
+	sb.Grow(len(operands))
+	sb.WriteString(operands[0])
+
+	for i, operator := range operators {
+		sb.WriteString(fmt.Sprintf(" %v %v", string(operator), operands[i+1]))
+	}
+
+	return sb.String()
 }
