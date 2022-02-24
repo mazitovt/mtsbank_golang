@@ -36,6 +36,17 @@ func (p *PathOnSphere) PointAt(i int) (s string, err error) {
 	return
 }
 
+func (p *PathOnSphere) PointOnSphereAt(i int) (s points.PointOnSphere, err error) {
+
+	if i < 0 || i >= len(p.points) {
+		err = errors.New("invalid index error")
+	} else {
+		s = p.points[i]
+	}
+
+	return
+}
+
 func (p *PathOnSphere) Distance() (distance float64, err error) {
 
 	l := len(p.points)

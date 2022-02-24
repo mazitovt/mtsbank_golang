@@ -9,32 +9,35 @@ type PathNavigator struct {
 	distance float64
 }
 
-func (n *PathNavigator) DistancePassed() float64 {
-	return n.passed
+func (p *PathNavigator) DistancePassed() float64 {
+	return p.passed
 }
 
-func (n *PathNavigator) DistanceLeft() float64 {
-	return n.distance - n.passed
+func (p *PathNavigator) DistanceLeft() float64 {
+	return p.distance - p.passed
 }
 
-func (n *PathNavigator) CurrentLocation() (string, error) {
-	return n.path.PointAt(n.position)
+func (p *PathNavigator) CurrentLocation() (string, error) {
+	return p.path.PointAt(p.position)
 }
 
-func (n *PathNavigator) NextLocation() bool {
-	n.position++
-	t, _ := n.path.DistanceBetween(n.position, n.position-1)
-	n.passed += t
-	return n.position < n.path.CountPoints()
+func (p *PathNavigator) MoveNext() bool {
+	d, _ := p.NextDistance()
+	p.position++
+	p.passed += d
+	return p.position < p.path.CountPoints()
 }
 
-func (n *PathNavigator) ResetRoute() {
-	n.position = -1
-	n.passed = 0
-	n.distance, _ = n.path.Distance()
+func (p *PathNavigator) NextDistance() (float64, error) {
+	return p.path.DistanceBetween(p.position, p.position+1)
 }
 
-func NewAnyPathNavigator(path path.Path) (a *PathNavigator, err error) {
+func (p *PathNavigator) ResetRoute() {
+	p.position = -1
+	p.passed = 0
+}
+
+func NewPathNavigator(path path.Path) (a *PathNavigator, err error) {
 	if d, e := path.Distance(); err != nil {
 		return a, e
 	} else {
