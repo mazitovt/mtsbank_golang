@@ -1,61 +1,48 @@
 package main
 
 import (
-	"flag"
+	"errors"
 	"fmt"
-	"log"
-	"mtsbank_golang/lesson6/mycrypt"
+	"mtsbank_golang/lesson6/coder"
+	"mtsbank_golang/lesson6/commands"
+	"mtsbank_golang/lesson6/commands/contract"
 	"mtsbank_golang/lesson6/signature"
-	"mtsbank_golang/lesson6/signature/contract"
+	"os"
 )
 
-type Encoder interface {
-	Encode() string
-}
+func ParseCommands(args []string, cmds ...contract.Command) (err error) {
 
-type FileEncoder struct {
-	signature contract.Signature
-}
+	if len(args) < 1 {
+		err = errors.New("invalid")
+		return
+	}
 
-type Decoder interface {
-	Decode() bool
-}
+	subcmd := args[0]
 
-type Dec struct {
-}
+	for _, cmd := range cmds {
+		if cmd.Name() == subcmd {
+			cmd.Init(args[1:])
+			return cmd.Run()
+		}
+	}
 
-func (d *Dec) Decode() bool {
-	return false
+	return errors.New("dfghf")
 }
 
 func main() {
 
-	var outFile string
+	sig := signature.NewSignatureSha256FromFile()
 
-	fileSource := flag.String("source-file", "", "File source")
-	flag.StringVar(&outFile, "out-file", "sign.txt", "File output")
-	flag.Parse()
+	decoder := coder.NewFileDecoder(sig)
+	encoder := coder.NewFileEncoder(sig)
 
-	args := flag.Args()
-	action := args[0]
+	cmd := []contract.Command{
+		commands.NewEncodeCommand(encoder),
+		commands.NewDecodeCommand(decoder),
+	}
 
-	fmt.Println(action, *fileSource, outFile)
-	switch action {
-	case "enc":
-
-		encoder := mycrypt.NewEncoder(*fileSource, signature.NewSignatureSha256FromFile())
-		err := encoder.EncryptSha256()
-		if err != nil {
-			panic(err)
-		}
-		err = encoder.SaveToFile(outFile)
-		if err != nil {
-			panic(err)
-		}
-
-	case "dec":
-		return
-	default:
-		log.Fatal("Use enc of dec param")
+	if err := ParseCommands(os.Args[1:], cmd...); err != nil {
+		fmt.Println(err)
+		os.Exit(1)
 	}
 }
