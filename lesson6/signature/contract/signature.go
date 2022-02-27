@@ -1,7 +1,7 @@
 package contract
 
 import (
-	"os"
+	"io/fs"
 	"reflect"
 	"time"
 )
@@ -11,7 +11,7 @@ type Signature interface {
 	Size() string
 	Name() string
 	Hash() []byte
-	HashFile(file *os.File) error
+	HashFile(string, fs.File) error
 	SignatureByte() []byte
 	Equal(s Signature) bool //(bool, error)
 	ParseString(string) error

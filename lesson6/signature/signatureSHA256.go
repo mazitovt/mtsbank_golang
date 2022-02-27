@@ -4,8 +4,9 @@ import (
 	"bytes"
 	"crypto/sha256"
 	"errors"
+	"io/fs"
 	"mtsbank_golang/lesson6/signature/contract"
-	"os"
+	//"os"
 	"path"
 	"reflect"
 	"strconv"
@@ -37,7 +38,7 @@ func (s *SignatureSha256) headString() string {
 	return strings.Join([]string{s.Date().Format(time.RFC3339), s.Size(), s.Name()}, separator2)
 }
 
-func (s *SignatureSha256) HashFile(file *os.File) (err error) {
+func (s *SignatureSha256) HashFile(name string, file fs.File) (err error) {
 
 	stat, err := file.Stat()
 	if err != nil {
@@ -45,7 +46,7 @@ func (s *SignatureSha256) HashFile(file *os.File) (err error) {
 	}
 
 	s.size = strconv.FormatInt(stat.Size(), 10)
-	s.name = path.Base(file.Name())
+	s.name = path.Base(name)
 	s.date = stat.ModTime().Round(time.Second)
 
 	var fileData = make([]byte, stat.Size())

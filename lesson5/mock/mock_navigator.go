@@ -35,7 +35,7 @@ func (m *MockGeocoder) EXPECT() *MockGeocoderMockRecorder {
 	return m.recorder
 }
 
-// Geocode mocks base method.
+// Geocode mock base method.
 func (m *MockGeocoder) Geocode(address string) (points.PointOnSphere, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Geocode", address)
@@ -50,7 +50,7 @@ func (mr *MockGeocoderMockRecorder) Geocode(address interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Geocode", reflect.TypeOf((*MockGeocoder)(nil).Geocode), address)
 }
 
-// ReverseGeocode mocks base method.
+// ReverseGeocode mock base method.
 func (m *MockGeocoder) ReverseGeocode(point points.PointOnSphere) (geocoding.GeocodeData, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "ReverseGeocode", point)

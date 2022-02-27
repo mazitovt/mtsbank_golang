@@ -24,7 +24,7 @@ func (fe *FileEncoder) Encode(filePath string) (err error) {
 
 	defer file.Close()
 
-	err = fe.signature.HashFile(file)
+	err = fe.signature.HashFile(file.Name(), file)
 	if err != nil {
 		return
 	}

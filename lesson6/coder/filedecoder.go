@@ -10,12 +10,12 @@ import (
 type FileDecoder struct {
 	//sourcePath      string
 	//signaturePath   string
-	signatureOrigin contract.Signature
-	signature       contract.Signature
+	signatureOrigin  contract.Signature
+	signatureCompare contract.Signature
 }
 
-func NewFileDecoder(signatureOrigin contract.Signature) *FileDecoder {
-	return &FileDecoder{signatureOrigin: signatureOrigin, signature: contract.NewSignature(signatureOrigin)}
+func NewFileDecoder(signatureOrigin, signatureCompare contract.Signature) *FileDecoder {
+	return &FileDecoder{signatureOrigin: signatureOrigin, signatureCompare: signatureCompare}
 }
 
 func (fe *FileDecoder) Decode(sourcePath, signaturePath string) (err error) {
@@ -37,7 +37,7 @@ func (fe *FileDecoder) Decode(sourcePath, signaturePath string) (err error) {
 
 	defer file.Close()
 
-	err = fe.signature.HashFile(file)
+	err = fe.signatureCompare.HashFile(file.Name(), file)
 	if err != nil {
 		return
 	}
@@ -50,5 +50,5 @@ func (fe *FileDecoder) SaveToFile(outFile string) (err error) {
 }
 
 func (fe *FileDecoder) IsFileChanged() (isChanged bool) {
-	return fe.signatureOrigin.Equal(fe.signature)
+	return fe.signatureOrigin.Equal(fe.signatureCompare)
 }

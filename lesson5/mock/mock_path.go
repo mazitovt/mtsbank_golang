@@ -33,7 +33,7 @@ func (m *MockPath) EXPECT() *MockPathMockRecorder {
 	return m.recorder
 }
 
-// CountPoints mocks base method.
+// CountPoints mock base method.
 func (m *MockPath) CountPoints() int {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CountPoints")
@@ -47,7 +47,7 @@ func (mr *MockPathMockRecorder) CountPoints() *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CountPoints", reflect.TypeOf((*MockPath)(nil).CountPoints))
 }
 
-// Distance mocks base method.
+// Distance mock base method.
 func (m *MockPath) Distance() (float64, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Distance")
@@ -62,7 +62,7 @@ func (mr *MockPathMockRecorder) Distance() *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Distance", reflect.TypeOf((*MockPath)(nil).Distance))
 }
 
-// DistanceBetween mocks base method.
+// DistanceBetween mock base method.
 func (m *MockPath) DistanceBetween(arg0, arg1 int) (float64, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DistanceBetween", arg0, arg1)
@@ -77,7 +77,7 @@ func (mr *MockPathMockRecorder) DistanceBetween(arg0, arg1 interface{}) *gomock.
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DistanceBetween", reflect.TypeOf((*MockPath)(nil).DistanceBetween), arg0, arg1)
 }
 
-// PointAt mocks base method.
+// PointAt mock base method.
 func (m *MockPath) PointAt(arg0 int) (string, error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "PointAt", arg0)
