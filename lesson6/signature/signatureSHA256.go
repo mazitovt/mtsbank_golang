@@ -18,10 +18,11 @@ const separator1 = "====sign===="
 const separator2 = "::"
 
 type SignatureSha256 struct {
-	date time.Time
-	size string
-	name string
-	hash []byte
+	sizeUint uint
+	date     time.Time
+	size     string
+	name     string
+	hash     []byte
 }
 
 func NewSignatureSha256FromFile() *SignatureSha256 {
@@ -113,4 +114,8 @@ func (s *SignatureSha256) Name() string {
 
 func (s *SignatureSha256) Hash() []byte {
 	return s.hash
+}
+
+func (s *SignatureSha256) SetSizeUint(size uint) {
+	s.sizeUint = size
 }

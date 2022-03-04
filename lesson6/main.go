@@ -32,8 +32,9 @@ func ParseCommands(args []string, cmds ...contract.Command) (err error) {
 func main() {
 
 	sig := signature.NewSignatureSha256FromFile()
+	sigCompare := signature.NewSignatureSha256FromFile()
 
-	decoder := coder.NewFileDecoder(sig)
+	decoder := coder.NewFileDecoder(sig, sigCompare)
 	encoder := coder.NewFileEncoder(sig)
 
 	cmd := []contract.Command{
