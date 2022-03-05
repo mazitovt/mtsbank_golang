@@ -132,3 +132,22 @@ func TestUnpackSignature(t *testing.T) {
 	assert.Equal(t, u, *er)
 
 }
+
+func TestPackAndUnpackSignature(t *testing.T) {
+	signTxt := "2022-02-27T21:02:09+05:00::3::source.txt====sign====abc"
+	testSig := signature.NewSignatureSha256FromFile()
+	testSig.ParseString(signTxt)
+
+	b, e := PackSignature(testSig)
+	if e != nil {
+		panic(e)
+	}
+
+	var ar signature.SignatureSha256
+	e = UnpackSignature(&ar, b.Bytes())
+	if e != nil {
+		panic(e)
+	}
+
+	assert.True(t, testSig.Equal(&ar))
+}
