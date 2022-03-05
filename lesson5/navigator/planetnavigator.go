@@ -1,7 +1,6 @@
 package navigator
 
 import (
-	"fmt"
 	"mtsbank_golang/lesson5/distance/path"
 	"mtsbank_golang/lesson5/distance/points"
 	"mtsbank_golang/lesson5/geocoding"
@@ -36,12 +35,18 @@ func (p *PlanetNavigator) CurrentLocation() (string, error) {
 	return p.path.PointAt(p.position)
 }
 
-func (p *PlanetNavigator) CurrentAddress() (string, error) {
-	pointOnSph, e := p.path.PointOnSphereAt(p.position)
-	fmt.Println(e)
-	data, e := p.geocoder.ReverseGeocode(pointOnSph)
-	fmt.Println(e)
-	return data.Address, nil
+func (p *PlanetNavigator) CurrentAddress() (addr string, err error) {
+	pointOnSph, err := p.path.PointOnSphereAt(p.position)
+	if err != nil {
+		return
+	}
+	data, err := p.geocoder.ReverseGeocode(pointOnSph)
+	if err != nil {
+		return
+	}
+	addr = data.Address
+
+	return
 }
 
 func (p *PlanetNavigator) MoveNext() bool {

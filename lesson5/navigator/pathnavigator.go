@@ -9,6 +9,10 @@ type PathNavigator struct {
 	distance float64
 }
 
+func (p *PathNavigator) CurrentAddress() (string, error) {
+	return p.CurrentLocation()
+}
+
 func (p *PathNavigator) DistancePassed() float64 {
 	return p.passed
 }

@@ -7,8 +7,13 @@ import (
 type Car struct {
 	navigator       navigator.Navigator
 	location        string
+	address         string
 	fuelTank        float64
 	fuelConsumption float64
+}
+
+func (c *Car) Address() string {
+	return c.address
 }
 
 func (c *Car) Location() string {
@@ -23,7 +28,8 @@ func (c *Car) FollowNavigator() bool {
 		if d, _ := c.navigator.NextDistance(); c.fuelTank-d*c.fuelConsumption >= 0 {
 			if c.navigator.MoveNext() {
 				c.fuelTank -= d * c.fuelConsumption
-				c.location, _ = c.navigator.CurrentAddress()
+				c.location, _ = c.navigator.CurrentLocation()
+				c.address, _ = c.navigator.CurrentAddress()
 			} else {
 				return true
 			}

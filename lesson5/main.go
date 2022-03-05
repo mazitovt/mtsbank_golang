@@ -2,60 +2,56 @@ package main
 
 import (
 	"fmt"
-	"mtsbank_golang/lesson5/car"
 	"mtsbank_golang/lesson5/distance/path"
 	"mtsbank_golang/lesson5/distance/points"
-	"mtsbank_golang/lesson5/geocoding"
 	"mtsbank_golang/lesson5/navigator"
 )
 
 func main() {
-	//p1, _ := points.NewPointOnSphereFromDegrees(55.7539, 37.6208)
-	//p2, _ := points.NewPointOnSphereFromDegrees(55.7539, 30.3146)
-	//p3, _ := points.NewPointOnSphereFromDegrees(59.9398, 30.3146)
-	//p4, _ := points.NewPointOnSphereFromDegrees(59.9398, 37.6208)
-	//
-	//pathOnSphere := path.NewPathOnSphere(6731, []points.PointOnSphere{*p1, *p2, *p3, *p4})
-	//
-	//navi, _ := navigator.NewPlanetNavigator(geocoding.NewGeocoder(), *pathOnSphere)
-	//
-	//for navi.MoveNext() {
-	//	v, _ := navi.CurrentLocation()
-	//	loc, e := navi.CurrentAddress()
-	//	fmt.Println(loc)
-	//	fmt.Println(e)
-	//	fmt.Println(v)
-	//	fmt.Println("left: ", navi.DistanceLeft())
-	//	fmt.Println("passed: ", navi.DistancePassed())
-	//}
-
 	p1, _ := points.NewPointOnSphereFromDegrees(55.7539, 37.6208)
 	p2, _ := points.NewPointOnSphereFromDegrees(55.7539, 30.3146)
 	p3, _ := points.NewPointOnSphereFromDegrees(59.9398, 30.3146)
 	p4, _ := points.NewPointOnSphereFromDegrees(59.9398, 37.6208)
 
-	path1 := path.NewPathOnSphere(6731, []points.PointOnSphere{*p1, *p2, *p3, *p4})
+	pathOnSphere := path.NewPathOnSphere(6731, []points.PointOnSphere{*p1, *p2, *p3, *p4})
 
-	navi, _ := navigator.NewPlanetNavigator(geocoding.NewGeocoder(), *path1)
-	//navi, _ := navigator.NewPathNavigator(path1)
+	navi, _ := navigator.NewPathNavigator(pathOnSphere)
 
-	car1 := car.NewCar(navi, 500, 1)
-	f := car1.FollowNavigator()
-	fmt.Printf("car.location: %v , fuel: %v,  follow: %v\n", car1.Location(), car1.FuelTank(), f)
+	for navi.MoveNext() {
+		v, e := navi.CurrentLocation()
+		fmt.Println(e)
+		fmt.Println(v)
+		fmt.Println("left: ", navi.DistanceLeft())
+		fmt.Println("passed: ", navi.DistancePassed())
+	}
 
-	_ = car1.AddFuel(500)
-
-	f = car1.FollowNavigator()
-
-	fmt.Printf("car.location: %v , fuel: %v,  follow: %v\n", car1.Location(), car1.FuelTank(), f)
-	_ = car1.AddFuel(500)
-
-	f = car1.FollowNavigator()
-	fmt.Printf("car.location: %v , fuel: %v,  follow: %v\n", car1.Location(), car1.FuelTank(), f)
-	_ = car1.AddFuel(100)
-
-	f = car1.FollowNavigator()
-	fmt.Printf("car.location: %v , fuel: %v,  follow: %v\n", car1.Location(), car1.FuelTank(), f)
+	//p1, _ := points.NewPointOnSphereFromDegrees(55.7539, 37.6208)
+	//p2, _ := points.NewPointOnSphereFromDegrees(55.7539, 30.3146)
+	//p3, _ := points.NewPointOnSphereFromDegrees(59.9398, 30.3146)
+	//p4, _ := points.NewPointOnSphereFromDegrees(59.9398, 37.6208)
+	//
+	//path1 := path.NewPathOnSphere(6731, []points.PointOnSphere{*p1, *p2, *p3, *p4})
+	//
+	//navi, _ := navigator.NewPlanetNavigator(geocoding.NewGeocoder(), *path1)
+	////navi, _ := navigator.NewPathNavigator(path1)
+	//
+	//car1 := car.NewCar(navi, 500, 1)
+	//f := car1.FollowNavigator()
+	//fmt.Printf("car.location: %v , fuel: %v,  follow: %v\n", car1.Location(), car1.FuelTank(), f)
+	//
+	//_ = car1.AddFuel(500)
+	//
+	//f = car1.FollowNavigator()
+	//
+	//fmt.Printf("car.location: %v , fuel: %v,  follow: %v\n", car1.Location(), car1.FuelTank(), f)
+	//_ = car1.AddFuel(500)
+	//
+	//f = car1.FollowNavigator()
+	//fmt.Printf("car.location: %v , fuel: %v,  follow: %v\n", car1.Location(), car1.FuelTank(), f)
+	//_ = car1.AddFuel(100)
+	//
+	//f = car1.FollowNavigator()
+	//fmt.Printf("car.location: %v , fuel: %v,  follow: %v\n", car1.Location(), car1.FuelTank(), f)
 
 }
 
