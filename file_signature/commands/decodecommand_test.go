@@ -2,9 +2,9 @@ package commands
 
 import (
 	"github.com/golang/mock/gomock"
-	"mtsbank_golang/tests_mocks/coder"
-	"mtsbank_golang/tests_mocks/mock"
-	"mtsbank_golang/tests_mocks/signature"
+	"mtsbank_golang/file_signature/coder"
+	"mtsbank_golang/file_signature/mock"
+	"mtsbank_golang/file_signature/signature"
 	"testing"
 )
 

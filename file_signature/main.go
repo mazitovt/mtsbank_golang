@@ -3,10 +3,10 @@ package main
 import (
 	"errors"
 	"fmt"
-	"mtsbank_golang/tests_mocks/coder"
-	"mtsbank_golang/tests_mocks/commands"
-	"mtsbank_golang/tests_mocks/commands/contract"
-	"mtsbank_golang/tests_mocks/signature"
+	"mtsbank_golang/file_signature/coder"
+	"mtsbank_golang/file_signature/commands"
+	"mtsbank_golang/file_signature/commands/contract"
+	"mtsbank_golang/file_signature/signature"
 	"os"
 )
 

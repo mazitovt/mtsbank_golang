@@ -3,7 +3,7 @@ package coder
 import (
 	"github.com/golang/mock/gomock"
 	"github.com/stretchr/testify/assert"
-	"mtsbank_golang/tests_mocks/mock"
+	"mtsbank_golang/file_signature/mock"
 	"os"
 	"testing"
 )

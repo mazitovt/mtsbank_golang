@@ -2,7 +2,7 @@ package commands
 
 import (
 	"flag"
-	"mtsbank_golang/tests_mocks/coder/contract"
+	"mtsbank_golang/file_signature/coder/contract"
 )
 
 type DecodeCommand struct {

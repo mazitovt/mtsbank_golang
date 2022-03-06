@@ -2,7 +2,7 @@ package packing
 
 import (
 	"github.com/stretchr/testify/assert"
-	"mtsbank_golang/tests_mocks/signature"
+	"mtsbank_golang/file_signature/signature"
 	"testing"
 )
 

@@ -2,7 +2,7 @@ package coder
 
 import (
 	"io/ioutil"
-	"mtsbank_golang/tests_mocks/signature/contract"
+	"mtsbank_golang/file_signature/signature/contract"
 	"os"
 	"strconv"
 )

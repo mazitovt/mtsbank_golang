@@ -5,7 +5,7 @@ import (
 	"crypto/sha256"
 	"errors"
 	"io/fs"
-	"mtsbank_golang/tests_mocks/signature/contract"
+	"mtsbank_golang/file_signature/signature/contract"
 	"path"
 	"reflect"
 	"strconv"
