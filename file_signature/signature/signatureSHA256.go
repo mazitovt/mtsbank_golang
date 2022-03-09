@@ -16,6 +16,8 @@ import (
 const separator1 = "====sign===="
 const separator2 = "::"
 
+// File Signature
+// cgen: binpack
 type SignatureSha256 struct {
 	sizeUint uint
 	date     time.Time
