@@ -6,6 +6,7 @@ import (
 	"mtsbank_golang/goroutine/pinger"
 	"os"
 	"sync"
+<<<<<<< HEAD
 	"time"
 )
 
@@ -16,6 +17,11 @@ func main() {
 
 // one chan for all addr
 func PingWithOneChahnel() {
+=======
+)
+
+func main() {
+>>>>>>> origin/goroutine
 
 	args := os.Args[1:]
 
@@ -23,7 +29,11 @@ func PingWithOneChahnel() {
 		log.Fatal("require at least one argument")
 	}
 
+<<<<<<< HEAD
 	dataCh := make(chan string, 5)
+=======
+	dataCh := make(chan string)
+>>>>>>> origin/goroutine
 
 	wg := &sync.WaitGroup{}
 
@@ -56,6 +66,7 @@ func PingWithOneChahnel() {
 		fmt.Println(r)
 	}
 }
+<<<<<<< HEAD
 
 // chan per addr
 func PingWithChannelPerAddress() {
@@ -107,3 +118,5 @@ func PingWithChannelPerAddress() {
 func remove(slice []chan string, s int) []chan string {
 	return append(slice[:s], slice[s+1:]...)
 }
+=======
+>>>>>>> origin/goroutine
