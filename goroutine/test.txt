@@ -1,0 +1,9 @@
+PS D:\golang\mtsbank_golang\goroutine> go run main.go 192.168.1.1 192.168.1.2 37.230.137.210
+Connecting to 192.168.1.1: try 1
+Connecting to 192.168.1.2: try 1
+Connecting to 37.230.137.210: try 1
+Ping 192.168.1.1 (192.168.1.1): 15.4731ms
+Ping 37.230.137.210 (37.230.137.210): 27.9165ms
+Connecting to 192.168.1.2: try 2
+Connecting to 192.168.1.2: try 3
+Ping 192.168.1.2 (192.168.1.2): 72.7527ms
